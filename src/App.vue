@@ -8,7 +8,12 @@
     <div>
       <div v-if="usersLoading">loading...</div>
       <ul id="users" v-else>
-        <li v-for="user in users" v-bind:key="user.id">{{ user.name }}</li>
+        <li v-for="user in users" v-bind:key="user.id">
+          {{ user.name }}
+          <span class="ml-4 cursor-pointer" @click="deleteUser(user.id)"
+            >X</span
+          >
+        </li>
       </ul>
     </div>
 
@@ -38,15 +43,14 @@
         </button>
       </div>
     </div>
-
-    <Login />
-    <Footer />
     <button
       class="border-solid border-4 border-light-blue-500"
       @click="getUsers"
     >
       fetch
     </button>
+
+    <Todos class="mt-6" />
   </div>
 </template>
 
@@ -54,17 +58,19 @@
 import { Component, Vue } from "vue-property-decorator";
 import Footer from "./components/Footer.vue";
 import Login from "./components/Login.vue";
+import Todos from "./components/Todos.vue";
+
 @Component({
   components: {
     Login,
     Footer,
+    Todos,
   },
 })
 export default class App extends Vue {
   users: Array<Record<string, unknown>> = [];
   usersLoading = false;
   user = {
-    id: null,
     name: "",
   };
 
@@ -93,6 +99,17 @@ export default class App extends Vue {
       body: JSON.stringify(this.user),
     })
       .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        this.getUsers();
+      });
+  }
+
+  deleteUser(id: number): void {
+    fetch(`/api/users/${id}`, {
+      method: "delete",
+    })
+      // .then((res) => res.json())
       .then((res) => {
         console.log(res);
         this.getUsers();
