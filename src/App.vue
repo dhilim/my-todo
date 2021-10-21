@@ -5,115 +5,65 @@
       <router-link to="/about">About</router-link>
     </div> -->
     <!-- <router-view /> -->
-    <div>
-      <div v-if="usersLoading">loading...</div>
-      <ul id="users" v-else>
-        <li v-for="user in users" v-bind:key="user.id">
-          {{ user.name }}
-          <span class="ml-4 cursor-pointer" @click="deleteUser(user.id)"
-            >X</span
-          >
-        </li>
-      </ul>
-    </div>
 
-    <div>
-      <label class="my-2" for="uname">Username</label>
-      <input
-        type="text"
-        name="uname"
-        class="
-          mt-1
-          mb-3
-          shadow-md
-          border-none
-          focus:ring-transparent
-          rounded-sm
-          bg-gray-100
-          text-pink-500
-        "
-        v-model="user.name"
-      />
-      <div class="mt-3">
+    <Users class="mt-6" />
+    <Todos class="mt-6" />
+
+    <div class="text-center my-10">
+      <div>{{ counter }}</div>
+      <div>
         <button
-          class="px-7 py-2 mx-2 font-semibold text-white bg-pink-600 rounded"
-          @click="addUser"
+          class="px-4 py-1 mx-2 font-semibold text-white bg-red-500 rounded"
+          @click="decrement"
         >
-          Add User
+          -
+        </button>
+        <button
+          class="px-4 py-1 mx-2 font-semibold text-white bg-green-500 rounded"
+          @click="increment"
+        >
+          +
         </button>
       </div>
     </div>
-    <button
-      class="border-solid border-4 border-light-blue-500"
-      @click="getUsers"
-    >
-      fetch
-    </button>
-
-    <Todos class="mt-6" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+// import { mapState } from "vuex";
 import Footer from "./components/Footer.vue";
 import Login from "./components/Login.vue";
 import Todos from "./components/Todos.vue";
+import Users from "./components/Users.vue";
+// import store from "./store";
 
 @Component({
   components: {
     Login,
     Footer,
     Todos,
+    Users,
   },
+  // computed: {
+  //   ...mapState({
+  //     counter: (state): number => state.count,
+  //   }),
+  // },
 })
 export default class App extends Vue {
-  users: Array<Record<string, unknown>> = [];
-  usersLoading = false;
-  user = {
-    name: "",
-  };
-
-  created(): void {
-    this.getUsers();
+  get counter(): number {
+    return this.$store.state.count;
   }
 
-  getUsers(): void {
-    this.usersLoading = true;
-
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then((json) => {
-        this.users = json.users;
-        this.usersLoading = false;
-      });
+  increment(): void {
+    // this.$store.commit("increment");
+    this.$store.commit("SET_USERS_LOADING", true);
   }
 
-  addUser(): void {
-    fetch("/api/users", {
-      method: "post",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(this.user),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        this.getUsers();
-      });
-  }
-
-  deleteUser(id: number): void {
-    fetch(`/api/users/${id}`, {
-      method: "delete",
-    })
-      // .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        this.getUsers();
-      });
+  decrement(): void {
+    // this.$store.commit("decrement");
+    this.$store.commit("SET_USERS_LOADING", false);
   }
 }
 </script>

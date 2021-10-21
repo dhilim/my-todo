@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <h2 class="text-h2">Todos</h2>
     <div>
       <label class="my-2" for="uname">Title</label>

@@ -40,7 +40,7 @@ export function makeServer({ environment = "development" } = {}) {
           return schema.users.create(attrs);
         },
         {
-          timing: 100,
+          timing: 1000,
         }
       );
 
