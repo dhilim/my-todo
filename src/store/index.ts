@@ -34,34 +34,27 @@ export default new Vuex.Store({
       fetch("/api/users")
         .then((res) => res.json())
         .then((json) => {
-          // this.users = json.users;
-          // this.usersLoading = false;
           context.commit("SET_USERS", json.users);
           context.commit("SET_USERS_LOADING", false);
+
+          return json;
         });
     },
 
-    addUser(context, user): void {
+    async addUser(context, user): Promise<void> {
       context.commit("SET_INPUT_USER_SAVING", true);
 
-      fetch("/api/users", {
+      await fetch("/api/users", {
         method: "post",
         headers: {
           Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(user),
-      })
-        .then((res) => {
-          // this.user.name = "";
-          // this.name.focus();
+      });
 
-          context.dispatch("getUsers");
-          return res;
-        })
-        .finally(() => {
-          context.commit("SET_INPUT_USER_SAVING", false);
-        });
+      context.dispatch("getUsers");
+      context.commit("SET_INPUT_USER_SAVING", false);
     },
 
     deleteUser(context, userId): void {

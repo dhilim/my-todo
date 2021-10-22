@@ -27,6 +27,7 @@
           bg-gray-100
           text-pink-500
         "
+        :disabled="saving"
         v-model="user.name"
         ref="name"
         @keydown.ctrl.enter="addUser"
@@ -82,48 +83,6 @@ export default class Users extends Vue {
     // this.getUsers();
     this.$store.dispatch("getUsers");
   }
-
-  //   getUsers(): void {
-  //     this.usersLoading = true;
-
-  //     fetch("/api/users")
-  //       .then((res) => res.json())
-  //       .then((json) => {
-  //         this.users = json.users;
-  //         this.usersLoading = false;
-  //       });
-  //   }
-
-  //   addUser(): void {
-  //     this.saving = true;
-  //     fetch("/api/users", {
-  //       method: "post",
-  //       headers: {
-  //         Accept: "application/json, text/plain, */*",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(this.user),
-  //     })
-  //       .then((res) => res.json())
-  //       .finally(() => {
-  //         this.user.name = "";
-  //         this.name.focus();
-  //         this.saving = false;
-
-  //         this.getUsers();
-  //       });
-  //   }
-
-  //   deleteUser(id: number): void {
-  //     fetch(`/api/users/${id}`, {
-  //       method: "delete",
-  //     })
-  //       // .then((res) => res.json())
-  //       .then((res) => {
-  //         console.log(res);
-  //         this.getUsers();
-  //       });
-  //   }
 
   getUsers(): void {
     this.$store.dispatch("getUsers");
