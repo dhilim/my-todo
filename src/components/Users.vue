@@ -28,7 +28,7 @@
           text-pink-500
         "
         :disabled="saving"
-        v-model="user.name"
+        v-model="name"
         ref="name"
         @keydown.ctrl.enter="addUser"
       />
@@ -54,49 +54,52 @@
 </template>
 
 <script lang="ts">
+import store from "@/store";
 import { Component, Ref, Vue } from "vue-property-decorator";
+import { User } from "@/models/User.interface";
 
 @Component
 export default class Users extends Vue {
-  //   users: Array<Record<string, unknown>> = [];
-  //   usersLoading = false;
-  //   saving = false;
-  user = {
-    name: "",
-  };
+  name: string | null = null;
 
-  get users(): Array<Record<string, unknown>> {
-    return this.$store.state.users;
+  get users(): Array<User> {
+    return store.state.users;
   }
 
   get usersLoading(): boolean {
-    return this.$store.state.usersLoading;
+    return store.state.usersLoading;
   }
 
   get saving(): boolean {
-    return this.$store.state.inputUserSaving;
+    return store.state.inputUserSaving;
   }
 
-  @Ref("name") readonly name!: HTMLInputElement;
+  get user(): User {
+    return {
+      id: null,
+      name: this.name,
+    };
+  }
+
+  @Ref("name") readonly refName!: HTMLInputElement;
 
   created(): void {
-    // this.getUsers();
-    this.$store.dispatch("getUsers");
+    store.dispatch("getUsers");
   }
 
   getUsers(): void {
-    this.$store.dispatch("getUsers");
+    store.dispatch("getUsers");
   }
 
   addUser(): void {
-    this.$store.dispatch("addUser", this.user).finally(() => {
-      this.user.name = "";
-      this.name.focus();
+    store.dispatch("addUser", this.user).finally(() => {
+      this.name = null;
+      this.refName.focus();
     });
   }
 
   deleteUser(id: number): void {
-    this.$store.dispatch("deleteUser", id);
+    store.dispatch("deleteUser", id);
   }
 }
 </script>
